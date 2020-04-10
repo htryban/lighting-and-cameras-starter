@@ -11,6 +11,11 @@ namespace LightingAndCamerasStarter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Crate[] crates;
+
+        //cameras
+        CirclingCamera camera;
+        FPSCamera fpsCamera;
 
         public Game1()
         {
@@ -39,6 +44,20 @@ namespace LightingAndCamerasStarter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            //camera = new CirclingCamera(this, new Vector3(0, 5, 10), 0.5f);
+            fpsCamera = new FPSCamera(this, new Vector3(0, 3, 10));
+
+            // Make some crates
+            crates = new Crate[] 
+            {
+                new Crate(this, CrateType.DarkCross, Matrix.Identity),
+                new Crate(this, CrateType.Slats, Matrix.CreateTranslation(4, 0, 5)),
+                new Crate(this, CrateType.Cross, Matrix.CreateTranslation(-8, 0, 3)),
+                new Crate(this, CrateType.DarkCross, Matrix.CreateRotationY(MathHelper.PiOver4) * Matrix.CreateTranslation(1, 0, 7)),
+                new Crate(this, CrateType.Slats, Matrix.CreateTranslation(3, 0, -3)),
+                new Crate(this, CrateType.Cross, Matrix.CreateRotationY(3) * Matrix.CreateTranslation(3, 2, -3))
+            };
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -62,8 +81,8 @@ namespace LightingAndCamerasStarter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
+            //camera.Update(gameTime);
+            fpsCamera.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -75,7 +94,11 @@ namespace LightingAndCamerasStarter
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            //draw the crates
+            foreach(Crate crate in crates)
+            {
+                crate.Draw(fpsCamera);
+            }
 
             base.Draw(gameTime);
         }
